@@ -2,6 +2,19 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+int glfw_windowSizeX = 640;
+int glfw_windowSizeY = 480;
+
+void glfw_WindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
+    glfw_windowSizeX = width;
+    glfw_windowSizeY = height;
+    glViewport(0, 0, glfw_windowSizeX, glfw_windowSizeY);
+}
+
+void glfw_WindowKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mode) {
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) { glfwSetWindowShouldClose(pWindow, GL_TRUE); }
+}
+
 int main(void)
 {
     /* Initialize the library */
@@ -19,13 +32,16 @@ int main(void)
         
 
     /* Create a windowed mode window and its OpenGL context */
-    GLFWwindow* pWindow = glfwCreateWindow(WIDTH, HEIGHT, "Some Game", nullptr, nullptr);
+    GLFWwindow* pWindow = glfwCreateWindow(glfw_windowSizeX, glfw_windowSizeY, "Some Game", nullptr, nullptr);
     if (!pWindow)
     {
         std::cout << "glfwCreateWindow failed\n";
         glfwTerminate();
         return -1;
     }
+
+    glfwSetWindowSizeCallback(pWindow, glfw_WindowSizeCallback);
+    glfwSetKeyCallback(pWindow, glfw_WindowKeyCallback);
 
     /* Make the window's context current */
     glfwMakeContextCurrent(pWindow);
